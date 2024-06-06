@@ -1,0 +1,208 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.Map;
+
+
+
+public class Account {
+    private String accountNumber;
+    private Customer customer;
+
+    public Account(String accountNumber, Customer customer) {
+        this.accountNumber = accountNumber;
+        this.customer = customer;
+    }
+
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+}
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class BillingSystemGUI {
+    private BillingSystem billingSystem;
+    private int attempts;
+
+    public BillingSystemGUI() {
+        billingSystem = new BillingSystem();
+        attempts = 0;
+        initializeGUI();
+    }
+
+    private void initializeGUI() {
+        JFrame frame = new JFrame("Welcome to Billing System");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(400, 200);
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(3, 2));
+        panel.setBackground(Color.LIGHT_GRAY); // Set background color
+
+        JLabel welcomeLabel = new JLabel("Welcome to the Billing System");
+        welcomeLabel.setForeground(Color.BLUE); // Set text color
+
+        JLabel billingNumberLabel = new JLabel("Enter your billing account number:");
+        billingNumberLabel.setForeground(Color.BLUE); // Set text color
+
+        JTextField billingNumberField = new JTextField(20);
+        billingNumberField.setBackground(Color.WHITE); // Set background color
+
+        JLabel attemptsLabel = new JLabel("Attempts left: 5");
+        attemptsLabel.setForeground(Color.RED); // Set text color
+
+        JButton submitButton = new JButton("Submit");
+        submitButton.setBackground(Color.GREEN); // Set button background color
+        submitButton.setForeground(Color.WHITE); // Set button text color
+
+        panel.add(welcomeLabel);
+        panel.add(new JLabel()); // empty cell
+        panel.add(billingNumberLabel);
+        panel.add(billingNumberField);
+        panel.add(attemptsLabel);
+        panel.add(submitButton);
+
+        frame.getContentPane().add(panel);
+        frame.setVisible(true);
+
+        submitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String accountNumber = billingNumberField.getText();
+                if (billingSystem.getAccountInfo().containsKey(accountNumber)) {
+                    Customer customer = billingSystem.getAccountInfo().get(accountNumber).getCustomer();
+                    showCustomerInfo(customer);
+                } else {
+                    attempts++;
+                    if (attempts < 5) {
+                        attemptsLabel.setText("Attempts left: " + (5 - attempts));
+                        JOptionPane.showMessageDialog(frame, "Invalid account number. Please try again.");
+                    } else {
+                        JOptionPane.showMessageDialog(frame, "You have exceeded the maximum number of attempts");
+                        submitButton.setEnabled(false);
+                    }
+                }
+            }
+        });
+    }
+
+    private void showCustomerInfo(Customer customer) {
+        JFrame infoFrame = new JFrame("Customer Information");
+        infoFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        infoFrame.setSize(300, 200);
+
+        JPanel infoPanel = new JPanel();
+        infoPanel.setLayout(new GridLayout(5, 1));
+        infoPanel.setBackground(Color.LIGHT_GRAY); // Set background color
+
+        JLabel infoLabel = new JLabel("Hello, the user's information is:");
+        infoLabel.setForeground(Color.BLUE); // Set text color
+
+        JLabel nameLabel = new JLabel("Name: " + customer.getName());
+        nameLabel.setForeground(Color.BLACK); // Set text color
+
+        JLabel orderTypeLabel = new JLabel("Order Type: " + customer.getOrderType());
+        orderTypeLabel.setForeground(Color.BLACK); // Set text color
+
+        JLabel dateOrderedLabel = new JLabel("Date Ordered: " + customer.getDateOrdered());
+        dateOrderedLabel.setForeground(Color.BLACK); // Set text color
+
+        JLabel statusLabel = new JLabel("Status: " + customer.getStatus());
+        statusLabel.setForeground(Color.BLACK); // Set text color
+
+        infoPanel.add(infoLabel);
+        infoPanel.add(nameLabel);
+        infoPanel.add(orderTypeLabel);
+        infoPanel.add(dateOrderedLabel);
+        infoPanel.add(statusLabel);
+
+        infoFrame.getContentPane().add(infoPanel);
+        infoFrame.setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        new BillingSystemGUI();
+    }
+}
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.Map;
+
+
+public class Customer {
+    private String name;
+    private String orderType;
+    private String dateOrdered;
+    private String status;
+
+    public Customer(String name, String orderType, String dateOrdered, String status) {
+        this.name = name;
+        this.orderType = orderType;
+        this.dateOrdered = dateOrdered;
+        this.status = status;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getOrderType() {
+        return orderType;
+    }
+
+    public String getDateOrdered() {
+        return dateOrdered;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    @Override
+    public String toString() {
+        return "User name: " + name + " Order Type: " + orderType + " Date Ordered: " + dateOrdered + " Status: " + status;
+    }
+}
+import java.util.HashMap;
+import java.util.Map;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+public class BillingSystem {
+    private Map<String, Account> accountInfo;
+
+    public BillingSystem() {
+        accountInfo = new HashMap<>();
+        accountInfo.put("123", new Account("123", new Customer("Sohan G", "Resume_order", "02/15/2005", "completed")));
+        accountInfo.put("1213", new Account("1213", new Customer("Kobe B", "Resume_order", "09/15/2020", "incomplete")));
+    }
+
+    public Map<String, Account> getAccountInfo() {
+        return accountInfo;
+    }
+}
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.Map;
+public class Main {
+    public static void main(String[] args) {
+        new BillingSystemGUI();
+    }
+}
+
